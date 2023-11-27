@@ -1,10 +1,12 @@
 package Livraria;
 
 import java.util.Scanner;
+import java.util.Stack;
 public class Menu {
 	public static void main(String[] args) {
 
 		Scanner leia = new Scanner(System.in);
+		Stack<String> listaLivros = new Stack<>();
 
 		int opcao;
 
@@ -36,21 +38,65 @@ public class Menu {
 
 			switch (opcao) {
 				case 1:
-					System.out.println("Adicionar Livro\n\n");
-
-					break;
+                
+                leia.nextLine();
+                System.out.print("Digite o nome do livro a ser adicionado: ");
+                String nomeLivro = leia.nextLine();
+                listaLivros.push(nomeLivro);
+                System.out.println("Livro adicionado!\n");
+                break;
 				case 2:
-					System.out.println("Listar todos os livros\n\n");
-
-					break;
+                    if (listaLivros.isEmpty()) {
+                        System.out.println("Sua lista está vazia :(\n");
+                    } else {
+                        System.out.println("Lista de Livros na Pilha:");
+                        for (String livro : listaLivros) {
+                            System.out.println(livro);
+                        }
+                        System.out.println();
+                    }
+                    break;
+	
 				case 3:
-					System.out.println("Atualizar livros\n\n");
-
-					break;
+                    leia.nextLine();
+                    System.out.print("Digite o nome do livro a ser atualizado: ");
+                    String livroAntigo = leia.nextLine();
+                    if (listaLivros.contains(livroAntigo)) {
+                        System.out.print("Digite o novo nome do livro: ");
+                        String novoNome = leia.nextLine();
+                        listaLivros.remove(livroAntigo);
+                        listaLivros.push(novoNome);
+                        System.out.println("Livro atualizado!\n");
+                    } else {
+                        System.out.println("Livro não encontrado na pilha.\n");
+                    }
+                    break;
 				case 4:
-					System.out.println("Deletar livro da lista \n\n");
+				    if (listaLivros.isEmpty()) {
+				        System.out.println("Lista vazia :( \n");
+				    } else {
+				        System.out.println("Lista de Livros atualizada:");
+				        for (int i = 0; i < listaLivros.size(); i++) {
+				            System.out.println(i + 1 + ". " + listaLivros.get(i));
+				        }
 
-					break;
+				        boolean entradaValida = false;
+				        do {
+				            System.out.print("\nDigite o número do livro a ser deletado \n(ou digite 0 para voltar ao Menu principal): ");
+				            int numeroLivroDeletado = leia.nextInt();
+
+				            if (numeroLivroDeletado == 0) {
+				                entradaValida = true;
+				            } else if (numeroLivroDeletado >= 1 && numeroLivroDeletado <= listaLivros.size()) {
+				                String livroDeletado = listaLivros.remove(numeroLivroDeletado - 1);
+				                System.out.println("Livro deletado: " + livroDeletado + "\n");
+				                entradaValida = true;
+				            } else {
+				                System.out.println("Número inválido... Tente novamente.");
+				            }
+				        } while (!entradaValida);
+				    }
+				    break;
 								
 				default:
 					System.out.println("\nOpção Inválida!\n");
