@@ -4,14 +4,13 @@ import java.util.Scanner;
 import java.util.Stack;
 import Livraria.util.Cores;
 import obras.model.EstoqueLivros;
-import obras.model.LivrosUsados;
 import obras.model.Obras;
 
 public class Menu {
     public static void main(String[] args) {
 
         Scanner leia = new Scanner(System.in);
-        Stack<String> listaLivros = new Stack<>();
+        Stack<Obras> listaLivros = new Stack<>();
 
         int opcao;
 
@@ -50,37 +49,68 @@ public class Menu {
             }
 
             switch (opcao) {
-                case 1:
-                    leia.nextLine();
-                    System.out.print(Cores.TEXT_CYAN + "Digite o nome do livro a ser adicionado: ");
-                    String nomeLivro = leia.nextLine();
-                    listaLivros.push(nomeLivro);
-                    System.out.println(Cores.TEXT_CYAN + "Livro adicionado!\n");
-                    break;
-                case 2:
-                    if (listaLivros.isEmpty()) {
-                        System.out.println(Cores.TEXT_CYAN + "Sua lista está vazia :(\n");
-                    } else {
-                        System.out.println(Cores.TEXT_CYAN + "Lista de Livros:");
-                        for (String livro : listaLivros) {
-                            System.out.println(livro);
+            case 1:
+                leia.nextLine();
+                System.out.print(Cores.TEXT_CYAN + "Digite o título do livro a ser adicionado: ");
+                String tituloLivro = leia.nextLine();
+                System.out.print(Cores.TEXT_CYAN + "Digite o autor do livro: ");
+                String autorLivro = leia.nextLine();
+                System.out.print(Cores.TEXT_CYAN + "Digite a quantidade disponível: ");
+                int quantidadeDisponivel = leia.nextInt();
+
+                EstoqueLivros livro = new EstoqueLivros(tituloLivro, autorLivro, quantidadeDisponivel, quantidadeDisponivel);
+                listaLivros.push(livro);
+                System.out.println(Cores.TEXT_CYAN + "Livro adicionado!\n");
+                break;
+            case 2:
+                if (listaLivros.isEmpty()) {
+                    System.out.println(Cores.TEXT_CYAN + "Sua lista está vazia :(\n");
+                } else {
+                    System.out.println(Cores.TEXT_CYAN + "Lista de Livros:");
+                    for (Obras obra : listaLivros) {
+                        if (obra instanceof EstoqueLivros) {
+                            ((EstoqueLivros) obra).mostrarDetalhes();
+                        } else {
+                            System.out.println("Tipo de obra desconhecido: " + obra.getClass().getSimpleName());
                         }
                     }
-                    break;
-                case 3:
-                    leia.nextLine();
-                    System.out.print(Cores.TEXT_CYAN + "Digite o nome do livro a ser atualizado: ");
-                    String livroAntigo = leia.nextLine();
-                    if (listaLivros.contains(livroAntigo)) {
-                        System.out.print(Cores.TEXT_CYAN + "Digite o nome do novo livro: ");
-                        String novoNome = leia.nextLine();
-                        listaLivros.remove(livroAntigo);
-                        listaLivros.push(novoNome);
-                        System.out.println(Cores.TEXT_CYAN + "Livro atualizado!\n");
-                    } else {
-                        System.out.println(Cores.TEXT_RED + "Livro não encontrado...\n");
+                }
+                break;
+            case 3:
+                leia.nextLine();
+                System.out.print(Cores.TEXT_CYAN + "Digite o nome do livro a ser atualizado: ");
+                String livroAntigo = leia.nextLine();
+                
+                // Procurar o livro na pilha
+                Obras livroAtualizar = null;
+                for (Obras obra : listaLivros) {
+                    if (obra.getTitulo().equals(livroAntigo)) {
+                        livroAtualizar = obra;
+                        break;
                     }
-                    break;
+                }
+
+                if (livroAtualizar != null) {
+                    System.out.print(Cores.TEXT_CYAN + "Digite o novo título do livro: ");
+                    String novoTitulo = leia.nextLine();
+                    System.out.print(Cores.TEXT_CYAN + "Digite o novo autor do livro: ");
+                    String novoAutor = leia.nextLine();
+                    System.out.print(Cores.TEXT_CYAN + "Digite a nova quantidade disponível: ");
+                    int novaQuantidade = leia.nextInt();
+
+                    // Atualizar os atributos do livro encontrado
+                    livroAtualizar.setTitulo(novoTitulo);
+                    livroAtualizar.setAutor(novoAutor);                    
+
+                    if (livroAtualizar instanceof EstoqueLivros) {
+                        ((EstoqueLivros) livroAtualizar).setQuantidadeDisponivel(novaQuantidade);
+                    }
+
+                    System.out.println(Cores.TEXT_CYAN + "Livro atualizado!\n");
+                } else {
+                    System.out.println(Cores.TEXT_RED + "Livro não encontrado...\n");
+                }
+                break;
                 case 4:
                     if (listaLivros.isEmpty()) {
                         System.out.println(Cores.TEXT_CYAN + "Lista vazia :( \n");
@@ -98,7 +128,7 @@ public class Menu {
                             if (numeroLivroDeletado == 0) {
                                 entradaValida = true;
                             } else if (numeroLivroDeletado >= 1 && numeroLivroDeletado <= listaLivros.size()) {
-                                String livroDeletado = listaLivros.remove(numeroLivroDeletado - 1);
+                                Obras livroDeletado = listaLivros.remove(numeroLivroDeletado - 1);
                                 System.out.println(Cores.TEXT_CYAN + "Livro deletado: " + livroDeletado + "\n");
                                 entradaValida = true;
                             } else {
@@ -115,7 +145,7 @@ public class Menu {
         }
     }
 
-    private static void processarOpcao(int opcao, Stack<String> listaLivros, Scanner leia) {
+    private static void processarOpcao(int opcao, Stack<Obras> listaLivros, Scanner leia) {
        
     }
 

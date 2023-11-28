@@ -21,7 +21,6 @@ public class EstoqueLivros extends Obras {
      System.out.println("Livro em Estoque:");
      System.out.println("Título: " + getTitulo());
      System.out.println("Autor: " + getAutor());
-     System.out.println("Preço: $" + getPreco());
-     System.out.println("Quantidade Disponível: " + quantidadeDisponivel);
+         System.out.println("Quantidade Disponível: " + quantidadeDisponivel);
  }
 }
