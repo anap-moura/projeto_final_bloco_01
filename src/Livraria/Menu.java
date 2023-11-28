@@ -5,6 +5,7 @@ import java.util.Stack;
 import Livraria.util.Cores;
 import obras.model.EstoqueLivros;
 import obras.model.Obras;
+import obras.model.LivrosUsados;
 
 public class Menu {
     public static void main(String[] args) {
@@ -21,10 +22,11 @@ public class Menu {
             System.out.println("                 no MENU abaixo:                     ");
             System.out.println("*****************************************************");
             System.out.println("                                                     ");
-            System.out.println("            1 - Adicionar Livro                      ");
-            System.out.println("            2 - Listar todos os livros        	     ");
-            System.out.println("            3 - Atualizar livros         			 ");
-            System.out.println("            4 - Deletar livro da lista               ");
+            System.out.println("            1 - Adicionar livro novo                 ");
+            System.out.println("            2 - Adicionar livro usado/semi-novo      ");
+            System.out.println("            3 - Listar todos os livros        	     ");
+            System.out.println("            4 - Atualizar livros         			 ");
+            System.out.println("            5 - Deletar livro da lista               ");
             System.out.println("            0 - Sair                                 ");
             System.out.println("                                                     ");
             System.out.println("*****************************************************");
@@ -63,6 +65,27 @@ public class Menu {
                 System.out.println(Cores.TEXT_CYAN + "Livro adicionado!\n");
                 break;
             case 2:
+                leia.nextLine();
+                System.out.print(Cores.TEXT_CYAN + "Digite o título do livro usado a ser adicionado: ");
+                String tituloLivroUsado = leia.nextLine();
+                System.out.print(Cores.TEXT_CYAN + "Digite o autor do livro: ");
+                String autorLivroUsado = leia.nextLine();
+                System.out.print(Cores.TEXT_CYAN + "Digite o ano de publicação do livro: ");
+                int anoPublicacaoUsado = leia.nextInt();
+                leia.nextLine(); 
+                System.out.print(Cores.TEXT_CYAN + "Digite o estado do livro (danificado ou seminovo): ");
+                String estadoLivroUsado = leia.nextLine();
+
+                LivrosUsados livroUsado = new LivrosUsados(tituloLivroUsado, autorLivroUsado, 0.0, anoPublicacaoUsado, estadoLivroUsado);
+                listaLivros.push(livroUsado);
+
+                System.out.println(Cores.TEXT_CYAN + "Livro usado adicionado!\n");
+
+                // Mostrar detalhes e calcular desconto
+                livroUsado.mostrarDetalhes();
+                System.out.println("Desconto: " + livroUsado.calcularDesconto() + "%\n");
+                break;
+            case 3: //perguntar pq aparece desconto e estado do livro 2x
                 if (listaLivros.isEmpty()) {
                     System.out.println(Cores.TEXT_CYAN + "Sua lista está vazia :(\n");
                 } else {
@@ -70,18 +93,28 @@ public class Menu {
                     for (Obras obra : listaLivros) {
                         if (obra instanceof EstoqueLivros) {
                             ((EstoqueLivros) obra).mostrarDetalhes();
+
+                            // Verificar se a obra é um LivroUsado e mostrar detalhes específicos
+                            if (obra instanceof LivrosUsados) {
+                                System.out.println("Estado do Livro: " + ((LivrosUsados) obra).getEstadoLivro());
+                                System.out.println("Desconto: " + ((LivrosUsados) obra).calcularDesconto() + "%");
+                            }
+                        } else if (obra instanceof LivrosUsados) {
+                            ((LivrosUsados) obra).mostrarDetalhes();
+                            System.out.println("Estado do Livro: " + ((LivrosUsados) obra).getEstadoLivro());
+                            System.out.println("Desconto: " + ((LivrosUsados) obra).calcularDesconto() + "%");
                         } else {
                             System.out.println("Tipo de obra desconhecido: " + obra.getClass().getSimpleName());
                         }
                     }
                 }
                 break;
-            case 3:
+            case 4:
                 leia.nextLine();
                 System.out.print(Cores.TEXT_CYAN + "Digite o nome do livro a ser atualizado: ");
                 String livroAntigo = leia.nextLine();
                 
-                // Procurar o livro na pilha
+                // Procurar o livro na lista
                 Obras livroAtualizar = null;
                 for (Obras obra : listaLivros) {
                     if (obra.getTitulo().equals(livroAntigo)) {
@@ -111,7 +144,7 @@ public class Menu {
                     System.out.println(Cores.TEXT_RED + "Livro não encontrado...\n");
                 }
                 break;
-                case 4:
+                case 5:
                     if (listaLivros.isEmpty()) {
                         System.out.println(Cores.TEXT_CYAN + "Lista vazia :( \n");
                     } else {
